@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, View } from 'react-native'
 import { ITask } from '../../types/types'
 import TaskItem from '../TaskItem/TaskItem'
 
@@ -20,13 +20,17 @@ const TaskList: FC<TaskListProps> = ({
 }) => {
 	if (tasks.length === 0) {
 		return (
-			<View style={styles.container}>
-				<Text>Список задач пуст</Text>
+			<View style={styles.emptyContainer}>
+				<Text style={styles.empty}> Список задач пуст</Text>
+				<Text style={styles.emptySub}>
+					Нажмите «Добавить задачу», чтобы создать первую
+				</Text>
 			</View>
 		)
 	}
+
 	return (
-		<View>
+		<ScrollView contentContainerStyle={styles.scrollContainer}>
 			{tasks.map(task => (
 				<TaskItem
 					changeStatus={changeStatus}
@@ -37,17 +41,33 @@ const TaskList: FC<TaskListProps> = ({
 					setTaskForInfo={setTaskForInfo}
 				/>
 			))}
-		</View>
+		</ScrollView>
 	)
 }
 
 export default TaskList
 
 const styles = StyleSheet.create({
-	container: {
+	scrollContainer: {
+		padding: 15,
+		paddingBottom: 30,
+	},
+	emptyContainer: {
 		flex: 1,
-		backgroundColor: 'blue',
-		alignItems: 'center',
 		justifyContent: 'center',
+		alignItems: 'center',
+		padding: 20,
+	},
+	empty: {
+		textAlign: 'center',
+		color: '#6c757d',
+		fontWeight: '700',
+		fontSize: 20,
+		marginBottom: 8,
+	},
+	emptySub: {
+		textAlign: 'center',
+		color: '#adb5bd',
+		fontSize: 14,
 	},
 })

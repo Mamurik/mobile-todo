@@ -23,14 +23,39 @@ const TaskInfo: FC<TaskInfoProps> = ({
 			<View style={styles.modalBackground}>
 				<View style={styles.taskContainer}>
 					<Text style={styles.taskTitle}>{task.title}</Text>
-					<Text style={styles.taskDesc}>Id: {task.id}</Text>
-					<Text style={styles.taskDesc}>Локация: {task.location}</Text>
-					<Text style={styles.taskDesc}>
-						Дата: {new Date(task.date).toLocaleDateString()}
-					</Text>
-					<Text style={styles.taskDesc}>Время: {task.time}</Text>
-					<Text style={styles.taskDesc}>Описание: {task.description}</Text>
-					<Text style={styles.taskDesc}>✅ Статус: {task.status}</Text>
+
+					<View style={styles.infoBlock}>
+						<Text style={styles.label}>📌 ID:</Text>
+						<Text style={styles.value}>{task.id}</Text>
+					</View>
+
+					<View style={styles.infoBlock}>
+						<Text style={styles.label}>📍 Локация:</Text>
+						<Text style={styles.value}>{task.location}</Text>
+					</View>
+
+					<View style={styles.infoBlock}>
+						<Text style={styles.label}>📅 Дата:</Text>
+						<Text style={styles.value}>
+							{new Date(task.date).toLocaleDateString()}
+						</Text>
+					</View>
+
+					<View style={styles.infoBlock}>
+						<Text style={styles.label}>🕒 Время:</Text>
+						<Text style={styles.value}>{task.time}</Text>
+					</View>
+
+					<View style={styles.infoBlock}>
+						<Text style={styles.label}>📝 Описание:</Text>
+						<Text style={styles.value}>{task.description}</Text>
+					</View>
+
+					<View style={styles.infoBlock}>
+						<Text style={styles.label}>✅ Статус:</Text>
+						<Text style={styles.value}>{task.status}</Text>
+					</View>
+
 					<TouchableOpacity
 						style={styles.closeButton}
 						onPress={() => setModalVisible(false)}
@@ -50,33 +75,43 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		backgroundColor: 'rgba(0,0,0,0.5)',
 	},
 	taskContainer: {
-		margin: 20,
-		padding: 30,
-		borderRadius: 10,
+		width: '85%',
+		padding: 20,
+		borderRadius: 15,
 		backgroundColor: '#fff',
+		shadowColor: '#000',
+		shadowOpacity: 0.15,
+		shadowRadius: 6,
+		elevation: 6,
 	},
 	taskTitle: {
 		textAlign: 'center',
-		color: '#333',
+		color: '#2d2f33',
 		fontWeight: '700',
 		fontSize: 22,
-		marginBottom: 10,
+		marginBottom: 15,
 	},
-	taskDesc: {
-		textAlign: 'left',
+	infoBlock: {
+		flexDirection: 'row',
+		marginBottom: 8,
+	},
+	label: {
+		fontWeight: '600',
 		color: '#555',
-		fontWeight: '400',
-		fontSize: 16,
-		marginBottom: 5,
+		marginRight: 5,
+	},
+	value: {
+		color: '#333',
+		flexShrink: 1,
 	},
 	closeButton: {
-		marginTop: 15,
-		backgroundColor: '#007bff',
-		padding: 10,
-		borderRadius: 5,
+		marginTop: 20,
+		backgroundColor: '#4e73df',
+		padding: 12,
+		borderRadius: 10,
 		alignItems: 'center',
 	},
 	buttonText: {

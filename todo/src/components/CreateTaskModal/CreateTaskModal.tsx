@@ -1,5 +1,7 @@
+import DateTimePicker from '@react-native-community/datetimepicker'
 import React, { FC, useState } from 'react'
 import {
+	Alert,
 	Modal,
 	StyleSheet,
 	Text,
@@ -24,26 +26,45 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({
 	const [description, setDescription] = useState('')
 	const [location, setLocation] = useState('')
 	const [date, setDate] = useState(new Date())
-	const [time, setTime] = useState('00')
+	const [time, setTime] = useState('00:00')
+	const [showDatePicker, setShowDatePicker] = useState(false)
+
+	const validateInput = () => {
+		if (!title || !description || !location || !time) {
+			Alert.alert('Ошибка', 'Пожалуйста, заполните все поля.')
+			return false
+		}
+
+		const timeRegex = /^([01]\d|2[0-3]):[0-5]\d$/
+		if (!timeRegex.test(time)) {
+			Alert.alert('Ошибка', 'Введите время в формате HH:MM.')
+			return false
+		}
+
+		return true
+	}
 
 	const handleSubmit = () => {
+		if (!validateInput()) return
+
 		const newTask: ITask = {
-			id: Math.random(), // Используем случайный ID
+			id: Date.now(),
 			title,
 			description,
 			location,
 			date,
 			time,
-			status: StatusEnum[0], // Начальный статус
+			status: StatusEnum[0],
 		}
 		addTask(newTask)
-		setModalVisible(false) // Закрываем модалку
-		// Сбрасываем поля
+		setModalVisible(false)
+
+		// сброс
 		setTitle('')
 		setDescription('')
 		setLocation('')
 		setDate(new Date())
-		setTime('00')
+		setTime('00:00')
 	}
 
 	return (
@@ -70,17 +91,32 @@ const CreateTaskModal: FC<CreateTaskModalProps> = ({
 						value={location}
 						onChangeText={setLocation}
 					/>
-					<TextInput
-						style={styles.input}
-						placeholder='Дата (YYYY-MM-DD)'
-						value={date.toISOString().split('T')[0]}
-						onChangeText={text => setDate(new Date(text))}
-					/>
+					<TouchableOpacity onPress={() => setShowDatePicker(true)}>
+						<TextInput
+							style={styles.input}
+							placeholder='Дата (YYYY-MM-DD)'
+							value={date.toISOString().split('T')[0]}
+							editable={false}
+						/>
+					</TouchableOpacity>
+					{showDatePicker && (
+						<DateTimePicker
+							value={date}
+							mode='date'
+							display='default'
+							onChange={(event, selectedDate) => {
+								setShowDatePicker(false)
+								if (selectedDate) setDate(selectedDate)
+							}}
+						/>
+					)}
+
 					<TextInput
 						style={styles.input}
 						placeholder='Время (HH:MM)'
 						value={time}
 						onChangeText={setTime}
+						maxLength={5}
 					/>
 
 					<TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
@@ -105,42 +141,50 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		backgroundColor: 'rgba(0,0,0,0.5)',
 	},
 	modalContainer: {
-		width: '80%',
+		width: '85%',
 		padding: 20,
-		borderRadius: 10,
+		borderRadius: 15,
 		backgroundColor: '#fff',
+		shadowColor: '#000',
+		shadowOpacity: 0.15,
+		shadowRadius: 6,
+		elevation: 6,
 	},
 	modalTitle: {
 		fontSize: 20,
-		fontWeight: 'bold',
+		fontWeight: '700',
 		marginBottom: 15,
 		textAlign: 'center',
+		color: '#2d2f33',
 	},
 	input: {
 		borderWidth: 1,
-		borderColor: '#ddd',
-		borderRadius: 5,
-		padding: 10,
-		marginBottom: 15,
+		borderColor: '#ced4da',
+		borderRadius: 10,
+		padding: 12,
+		marginBottom: 12,
+		backgroundColor: '#f8f9fa',
 	},
 	submitButton: {
-		backgroundColor: '#007bff',
+		backgroundColor: '#1cc88a',
 		padding: 15,
-		borderRadius: 5,
+		borderRadius: 10,
 		alignItems: 'center',
+		marginTop: 5,
 	},
 	closeButton: {
 		marginTop: 10,
-		backgroundColor: 'red',
+		backgroundColor: '#e74a3b',
 		padding: 15,
-		borderRadius: 5,
+		borderRadius: 10,
 		alignItems: 'center',
 	},
 	buttonText: {
 		color: '#fff',
 		fontWeight: '600',
+		fontSize: 16,
 	},
 })
